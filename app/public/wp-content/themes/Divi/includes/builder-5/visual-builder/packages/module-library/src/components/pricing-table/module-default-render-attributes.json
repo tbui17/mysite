@@ -1,0 +1,21 @@
+{
+  "_comment": "!!! THIS IS AN AUTOMATICALLY GENERATED FILE - DO NOT EDIT !!!",
+  "module": {
+    "advanced": {
+      "featured": {
+        "desktop": {
+          "value": "off"
+        }
+      }
+    },
+    "decoration": {
+      "sizing": {
+        "desktop": {
+          "value": {
+            "flexType": "12_24"
+          }
+        }
+      }
+    }
+  }
+}
