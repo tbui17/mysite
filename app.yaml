@@ -1,17 +1,9 @@
-kind: wasmer.io/App.v0
-name: wordpress
-owner: wasmer-examples
+name: mysite
+owner: tbui17
 package: .
-volumes:
-  - name: wp-content
-    mount: /app/wp-content
-scaling:
-  mode: single_concurrency
 capabilities:
-  database:
-    engine: mysql
   instaboot:
-    max_age: 59m
+    mode: null
     requests:
     - path: /
       headers:
@@ -37,3 +29,12 @@ capabilities:
         value: text/html
       - name: Accept-Language
         value: en-US
+    max_age: 59m
+  database:
+    engine: mysql
+volumes:
+- name: wp-content
+  mount: /app/wp-content
+scaling:
+  mode: single_concurrency
+kind: wasmer.io/App.v0
