@@ -1,56 +1,26 @@
 [package]
+name = "tbui17/mysite"
+version = "0.1.0"
+description = "WordPress site on Wasmer"
 entrypoint = "run"
 
 [dependencies]
 "php/php-eh" = "=8.3.404-beta.4"
 "wasmer/bash" = "*"
-"wasmer/static-web-server" = "*"
 
 [fs]
+# Maps your local 'app' folder (which contains 'public') to the container
 "/app" = "app"
-"/db" = "db"
-"/config" = "config"
-
-[[command]]
-name = "serve-static"
-module = "wasmer/static-web-server:webserver"
-runner = "wasi"
-[command.annotations.wasi]
-main-args = [
-  "--root", "/app"
-]
-
+"/conf" = "conf" 
 
 [[command]]
 name = "run"
 module = "php/php-eh:php"
-runner = "wasi"
-[command.annotations.wasi]
-main-args = [
-    "-t",
-    "/app",
-    "-S",
-    "localhost:8080",
-    "-d",
-    "memory_limit=256M",
-    "-d",
-    "max_execution_time=600",
-    "-d",
-    "max_input_time=600",
-    "-d",
-    "max_input_vars=4096",
-    "-d",
-    "upload_max_filesize=1024M",
-    "-d",
-    "post_max_size=1024M",
-]
+runner = "wcgi" # Changed to wcgi for better Edge support
 
-[[command]]
-name = "install-wp"
-module = "wasmer/bash:bash"
-runner = "wasi"
-[command.annotations.wasi]
-main-args = ["/app/install/install.sh"]
+[command.annotations.wcgi]
+# This points to where index.php lives
+root = "app/public" 
 
 [[command]]
 name = "wp-cron"
@@ -58,11 +28,14 @@ module = "php/php-eh:php"
 runner = "wasi"
 [command.annotations.wasi]
 main-args = [
-    "/app/wp-cli.phar",
-    "cron",
-    "event",
-    "run",
-    "--due-now",
-    "--allow-root",
-    "--path=/app",
+    "/app/public/wp-cron.php", # Updated path to find the file
+    "--path=/app/public",
 ]
+
+# Keep your install command if you have that script
+[[command]]
+name = "install-wp"
+module = "wasmer/bash:bash"
+runner = "wasi"
+[command.annotations.wasi]
+main-args = ["/app/public/install/install.sh"]
